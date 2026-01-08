@@ -12,11 +12,14 @@ import {
   Zap,
 } from "lucide-react";
 import Link from "next/link";
+import { toast } from "sonner";
 
 type JobDetailsPageProps = {
+  documentId: string;
   companyLogoUrl: string;
   jobTitle: string;
   companyName: string;
+  companyDocumentId: string;
   salaryRange: string;
   jobAttributes: {
     isRemote: boolean;
@@ -36,9 +39,11 @@ type JobDetailsPageProps = {
   };
 };
 export default function JobDetails({
+  documentId,
   companyLogoUrl,
   jobTitle,
   companyName,
+  companyDocumentId,
   jobAttributes,
   benefits,
   aboutRole,
@@ -46,6 +51,30 @@ export default function JobDetails({
   waysToWork,
   sidebarDetails,
 }: JobDetailsPageProps) {
+  const jobUrl = `${window.location.origin}/jobs/${documentId}`;
+
+  const handleShare = async () => {
+    if (navigator.share) {
+      // Mobile / supported browsers
+      try {
+        await navigator.share({
+          title: jobTitle,
+          url: jobUrl,
+        });
+        toast.success("Job shared successfully!");
+      } catch {
+        toast.error("Failed to share job.");
+      }
+    } else {
+      // Desktop fallback: copy to clipboard
+      try {
+        await navigator.clipboard.writeText(jobUrl);
+        toast.success("Job link copied to clipboard!");
+      } catch {
+        toast.error("Failed to copy job link.");
+      }
+    }
+  };
   return (
     <div className="min-h-screen px-4 py-8 bg-gray-100 font-sans">
       <div className="grid grid-cols-1 lg:grid-cols-3 mx-auto container max-w-7xl gap-8">
@@ -60,11 +89,11 @@ export default function JobDetails({
                   height={64}
                   width={64}
                   unoptimized
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover  border border-gray-200 rounded-lg"
                 />
               ) : (
-                <span className="font-bold text-2xl text-gray-900 leading-tight md:text-3xl bg-pink-500">
-                  {companyName}
+                <span className="text-lg font-bold border border-gray-100 rounded-lg h-16 w-16 flex items-center justify-center bg-purple-200">
+                  {companyName.charAt(0)}
                 </span>
               )}
             </div>
@@ -76,6 +105,7 @@ export default function JobDetails({
               <div className="flex shrink-0 items-center gap-2">
                 <Button
                   className="rounded-full px-4 py-2 text-gray-700 hover:bg-gray-50"
+                  onClick={handleShare}
                   variant="outline"
                 >
                   <Share2 className="mr-2 h-4 w-4" />
@@ -104,11 +134,14 @@ export default function JobDetails({
           </div>
 
           {/* Benefits/Requirements */}
-          <ul className="mb-6 list-inside list-disc space-y-2 text-gray-700">
-            {benefits.map((benefit) => (
-              <li key={benefit}>{benefit}</li>
-            ))}
-          </ul>
+          <h2 className="mb-3 text-gray-900 text-xl font-semibold">
+            Benefits:
+          </h2>
+          {benefits.map((benefit) => (
+            <p className="mb-4 text-gray-700 leading-relaxed" key={benefit}>
+              {benefit}
+            </p>
+          ))}
           {/* About the role */}
           <h2 className="mb-3 text-gray-900 text-xl font-semibold">
             About the Role:
@@ -192,7 +225,9 @@ export default function JobDetails({
                     unoptimized
                   />
                 ) : (
-                  <span className="font-bold text-2xl text-white">T</span> // Placeholder for Transamerica
+                  <span className="text-lg font-bold border border-gray-100 rounded-lg h-16 w-16 flex items-center justify-center bg-purple-200">
+                    {companyName.charAt(0)}
+                  </span>
                 )}
               </div>
               <p className="font-semibold text-lg text-gray-900">
@@ -200,7 +235,7 @@ export default function JobDetails({
               </p>
             </div>
             {/* * biome-ignore lint/nursery/noLeakedRender: <explanation> */}
-{sidebarDetails.companyWebsite && (
+            {sidebarDetails.companyWebsite && (
               <p className="mb-4 text-gray-600 text-sm">
                 <span className="font-medium">Website:</span>{" "}
                 <a
@@ -213,10 +248,13 @@ export default function JobDetails({
                 </a>
               </p>
             )}
-            <Link href="/companies/123">
-            <Button className="w-full rounded-lg text-blue-600 px-4 py-2 border-blue-600 bg-white transition-all hover:bg-blue-50"  variant="outline">
-              View Company
-            </Button>
+            <Link href={`/companies/${companyDocumentId}`}>
+              <Button
+                className="w-full rounded-lg text-blue-600 px-4 py-2 border-blue-600 bg-white transition-all hover:bg-blue-50"
+                variant="outline"
+              >
+                View Company
+              </Button>
             </Link>
           </div>
         </div>

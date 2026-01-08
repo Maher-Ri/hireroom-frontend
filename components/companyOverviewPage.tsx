@@ -1,36 +1,10 @@
+/** biome-ignore-all lint/correctness/noUnusedFunctionParameters: <explanation> */
 "use client";
 import React from "react";
 import { Button } from "./ui/button";
 import Image from "next/image";
 import JobCard from "./JobCard";
-
-type CompanyOverviewPageProps = {
-  id: string;
-  companyLogoUrl: string;
-  companyName: string;
-  totalJobs: number;
-  overviewContent: {
-    about: string[];
-  };
-  jobs: JobCardProps[];
-  sideBarDetails: {
-    companyWebsite?: string;
-  };
-};
-
-type JobCardProps = {
-  id: number;
-  timePosted: string;
-  tags: string[];
-  companyLogoUrl: string;
-  jobTitle: string;
-  companyName: string;
-  salaryRange: string;
-  isQuickApply: boolean;
-  isRemote: boolean;
-  location: string;
-  jobType: string;
-};
+import type { CompanyOverviewPageProps } from "@/types/company";
 
 export default function CompanyOverviewPage({
   id,
@@ -39,7 +13,7 @@ export default function CompanyOverviewPage({
   totalJobs,
   overviewContent,
   jobs,
-  sideBarDetails,
+  sidebarDetails,
 }: CompanyOverviewPageProps) {
   const [activeTab, setActiveTab] = React.useState<"Overview" | "Jobs">(
     "Overview"
@@ -54,7 +28,7 @@ export default function CompanyOverviewPage({
               {companyLogoUrl ? (
                 <Image
                   alt={`${companyName} logo`}
-                  className="h-full w-full object-cover"
+                  className="h-full w-full object-cover border border-gray-200 rounded-lg"
                   height={64}
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;
@@ -66,8 +40,8 @@ export default function CompanyOverviewPage({
                   width={64}
                 />
               ) : (
-                <span className="font-bold text-2xl text-white">
-                  {companyName.charAt(0).toUpperCase()}
+                <span className="text-lg font-bold uppercase border border-gray-100 rounded-lg h-16 w-16 flex items-center justify-center bg-purple-200">
+                  {companyName.charAt(0)}
                 </span>
               )}
             </div>
@@ -114,12 +88,13 @@ export default function CompanyOverviewPage({
                 ))}
               </div>
             ) : (
-              <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-8">
                 {jobs.length > 0 ? (
                   jobs.map((job) => <JobCard key={job.id} {...job} />)
                 ) : (
                   <div className="rounded-xl bg-white p-6 text-center text-gray-600 shadow-md">
-                    No jobs found for {companyName} at this time.
+                    No jobs found for <strong>{companyName}</strong> at this
+                    time.
                   </div>
                 )}
               </div>
@@ -130,11 +105,11 @@ export default function CompanyOverviewPage({
             {/* company information card */}
             <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-md">
               <div className="mb-4 flex items-center gap-3">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-red-500">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-lg">
                   {companyLogoUrl ? (
                     <Image
                       alt={`${companyName} logo`}
-                      className="h-full w-full object-cover"
+                      className="h-full w-full object-cover border border-gray-200 rounded-lg"
                       onError={(e) => {
                         const target = e.target as HTMLImageElement;
                         target.src =
@@ -146,8 +121,8 @@ export default function CompanyOverviewPage({
                       width={64}
                     />
                   ) : (
-                    <span className="font-bold text-2xl text-white">
-                      {companyName.charAt(0).toUpperCase()}
+                    <span className="text-lg font-bold uppercase border border-gray-100 rounded-lg h-16 w-16 flex items-center justify-center bg-purple-200">
+                      {companyName.charAt(0)}
                     </span>
                   )}
                 </div>
@@ -156,16 +131,16 @@ export default function CompanyOverviewPage({
                 </p>
               </div>
               {/** biome-ignore lint/nursery/noLeakedRender: <explanation> */}
-              {sideBarDetails.companyWebsite && (
+              {sidebarDetails.companyWebsite && (
                 <p className="mb-4 text-gray-600 text-sm">
                   <span className="font-medium">Website:</span>
                   <a
                     className="text-blue-600 hover:underline"
-                    href={sideBarDetails.companyWebsite}
+                    href={sidebarDetails.companyWebsite}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    {sideBarDetails.companyWebsite}
+                    {sidebarDetails.companyWebsite}
                   </a>
                 </p>
               )}
