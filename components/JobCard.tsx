@@ -6,6 +6,7 @@ import Link from "next/link";
 
 type JobCardProps = {
   id: number;
+  documentId: string;
   timePosted: string;
   tags: string[];
   companyLogoUrl: string;
@@ -13,10 +14,11 @@ type JobCardProps = {
   jobTitle: string;
   salaryRange: string;
   isRemote: boolean;
+  location: string;
   jobType: string;
 };
 export default function JobCard({
-  id: number,
+  documentId,
   timePosted,
   tags,
   companyLogoUrl,
@@ -28,12 +30,12 @@ export default function JobCard({
 }: JobCardProps) {
   return (
     <Link
-      href="/jobs/123"
-      className="mx-auto w-full max-w-5xl mt-6 p-6 cursor-pointer flex flex-col gap-4 rounded-xl border border-gray-400 bg-white shadow-sm transition ease-in-out hover:border-purple-400 hover:shadow-purple-300"
+      href={`/jobs/${documentId}`}
+      className="mx-auto w-full max-w-5xl p-6 cursor-pointer flex flex-col gap-4 rounded-xl border border-gray-300 bg-white shadow-sm transition ease-in-out hover:border-purple-400 hover:shadow-purple-300"
     >
       {/* header part */}
       <div className="flex items-start justify-between ">
-        <div className="flex flex-col md:flex-row md:items-center gap-2">
+        <div className="flex flex-row md:items-center gap-2">
           <span className="text-gray-500 text-sm font-medium">
             {timePosted}
           </span>
@@ -56,18 +58,18 @@ export default function JobCard({
             <Image
               height={56}
               width={56}
-              className="h-full w-full object-cover"
+              className="h-full w-full object-cover border border-gray-200 rounded-lg"
               src={companyLogoUrl}
               alt={`${companyName} Logo`}
               unoptimized
-              onError={(e) => {
-                const target = e.target as HTMLImageElement;
-                target.src =
-                  "https://logo.com/image-cdn/images/kts928pd/production/59fdc229ba87cfc476782a1ed3dd2f24e72e13c0-731x731.png?w=1080&q=72&fm=webp";
-              }}
+              // onError={(e) => {
+              //   const target = e.target as HTMLImageElement;
+              //   target.src =
+              //     "https://logo.com/image-cdn/images/kts928pd/production/59fdc229ba87cfc476782a1ed3dd2f24e72e13c0-731x731.png?w=1080&q=72&fm=webp";
+              // }}
             />
           ) : (
-            <span>{companyName}</span>
+            <span className="text-lg font-bold border border-gray-100 rounded-lg h-14 w-14 flex items-center justify-center bg-purple-200">{companyName.charAt(0)}</span>
           )}
         </div>
         <div className="grow">

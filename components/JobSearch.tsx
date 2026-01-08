@@ -1,11 +1,5 @@
 "use client";
-import {
-  Briefcase,
-  Building2,
-  ChevronDown,
-  Crown,
-  Search,
-} from "lucide-react";
+import { Briefcase, Building2, ChevronDown, Crown, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { Button } from "./ui/button";
@@ -17,35 +11,74 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
 } from "./ui/dropdown-menu";
+import type { JobFilters } from "@/types/jobs";
 
-type JobType = "Full-Time" | "Contract" | "Part-Time" | null;
-type WorkPlaceType = "On-Site" | "Hybrid" | "Remote" | null;
-type SeniorityLevel =
-  | "Entry-Level"
-  | "Mid-Level"
-  | "Senior"
-  | "Manager"
-  | "Director"
-  | "Executive"
-  | null;
+// type JobType = "Full-time" | "Contract" | "Part-time" | null;
+// type WorkPlaceType = "On-site" | "Hybrid" | "Remote" | null;
+// type SeniorityLevel =
+//   | "Entry-Level"
+//   | "Mid-Level"
+//   | "Senior"
+//   | "Manager"
+//   | "Director"
+//   | "Executive"
+//   | null;
 
-export function JobSearch() {
+type JobSearchProps = {
+  onChnageFilters: (filters: JobFilters) => void;
+};
+
+export function JobSearch({ onChnageFilters }: JobSearchProps) {
   const [jobTitle, setJobTitle] = useState<string>("");
-  const [selectedJbType, setSelectedJbType] = useState<JobType>(null);
+  const [selectedJbType, setSelectedJbType] =
+    useState<JobFilters["jobType"]>(null);
   const [selectedWorkPlace, setSelectedWorkPlace] =
-    useState<WorkPlaceType>(null);
+    useState<JobFilters["workplace"]>(null);
   const [selectedSeniority, setSelectedSeniority] =
-    useState<SeniorityLevel>(null);
+    useState<JobFilters["seniority"]>(null);
 
   const handleJobTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setJobTitle(e.target.value);
   };
-  const handleSearch = () => {
-    console.log(jobTitle);
-    console.log(selectedJbType);
-    console.log(selectedWorkPlace);
-    console.log(selectedSeniority);
+  const updateFilters = (newFilters?: Partial<JobFilters>) => {
+    const filters: JobFilters = {
+      search: newFilters?.search ?? jobTitle,
+      jobType: newFilters?.jobType ?? selectedJbType,
+      workplace: newFilters?.workplace ?? selectedWorkPlace,
+      seniority: newFilters?.seniority ?? selectedSeniority,
+    };
+    onChnageFilters(filters);
   };
+
+  const clearAllFilters = () => {
+    setJobTitle("");
+    setSelectedJbType(null);
+    setSelectedWorkPlace(null);
+    setSelectedSeniority(null);
+    onChnageFilters({
+      search: "",
+      jobType: null,
+      workplace: null,
+      seniority: null,
+    });
+  };
+  const handleSearch = () => {
+    updateFilters({ search: jobTitle });
+  };
+  // Active filters for displaying pills
+  const activeFilters = [
+    jobTitle ? { label: `Title: ${jobTitle}`, key: 'search' } : null,
+    selectedJbType
+      ? { label: `Type: ${selectedJbType}`, key: 'jobType' }
+      : null,
+    selectedWorkPlace
+      ? { label: `Workplace: ${selectedWorkPlace}`, key: 'workplace' }
+      : null,
+    selectedSeniority
+      ? { label: `Seniority: ${selectedSeniority}`, key: 'seniority' }
+      : null,
+  ].filter(Boolean) as { label: string; key: keyof JobFilters }[];
+
   return (
     <div className="flex items-center justify-center py-8">
       <div className="w-full max-w-5xl rounded-2xl border border-gray-200 p-2 bg-white shadow-sm transition-all duration-200 ease-in-out hover:border-purple-400 hover:shadow-purple-300">
@@ -90,27 +123,17 @@ export function JobSearch() {
               <DropdownMenuContent className="w-56 bg-white border rounded shadow-md p-2">
                 <DropdownMenuLabel>Job Type</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  onClick={() => {
-                    setSelectedJbType("Full-Time");
-                  }}
-                >
-                  Full-time
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => {
-                    setSelectedJbType("Part-Time");
-                  }}
-                >
-                  Part-time
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => {
-                    setSelectedJbType("Contract");
-                  }}
-                >
-                  Contract
-                </DropdownMenuItem>
+                {["Full-time", "Contract", "Part-time"].map((type) => (
+                  <DropdownMenuItem
+                    key={type}
+                    onClick={() => {
+                      setSelectedJbType(type);
+                      updateFilters({ jobType: type });
+                    }}
+                  >
+                    {type}
+                  </DropdownMenuItem>
+                ))}
               </DropdownMenuContent>
             </DropdownMenu>
             {/* workspace */}
@@ -129,27 +152,17 @@ export function JobSearch() {
               <DropdownMenuContent className="w-56 bg-white border rounded shadow-md p-2">
                 <DropdownMenuLabel>workplace</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  onClick={() => {
-                    setSelectedWorkPlace("On-Site");
-                  }}
-                >
-                  On-Site
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => {
-                    setSelectedWorkPlace("Remote");
-                  }}
-                >
-                  Remote
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => {
-                    setSelectedWorkPlace("Hybrid");
-                  }}
-                >
-                  Hybrid
-                </DropdownMenuItem>
+                {["On-site", "Hybrid", "Remote"].map((place) => (
+                  <DropdownMenuItem
+                    key={place}
+                    onClick={() => {
+                      setSelectedWorkPlace(place);
+                      updateFilters({ workplace: place });
+                    }}
+                  >
+                    {place}
+                  </DropdownMenuItem>
+                ))}
               </DropdownMenuContent>
             </DropdownMenu>
             {/* seniority */}
@@ -168,51 +181,55 @@ export function JobSearch() {
               <DropdownMenuContent className="w-56 bg-white border rounded shadow-md p-2">
                 <DropdownMenuLabel>Seniority</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  onClick={() => {
-                    setSelectedSeniority("Entry-Level");
-                  }}
-                >
-                  Entry-Level
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => {
-                    setSelectedSeniority("Mid-Level");
-                  }}
-                >
-                  Mid-Level
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => {
-                    setSelectedSeniority("Senior");
-                  }}
-                >
-                  Senior
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => {
-                    setSelectedSeniority("Manager");
-                  }}
-                >
-                  Manager
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => {
-                    setSelectedSeniority("Director");
-                  }}
-                >
-                  Director
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => {
-                    setSelectedSeniority("Executive");
-                  }}
-                >
-                  Executive
-                </DropdownMenuItem>
+                {[
+                  "Entry-Level",
+                  "Mid-Level",
+                  "Senior",
+                  "Manager",
+                  "Director",
+                  "Executive",
+                ].map((lvl) => (
+                  <DropdownMenuItem
+                    key={lvl}
+                    onClick={() => {
+                      setSelectedSeniority(lvl);
+                      updateFilters({ seniority: lvl });
+                    }}
+                  >
+                    {lvl}
+                  </DropdownMenuItem>
+                ))}
               </DropdownMenuContent>
             </DropdownMenu>
+
+            {/* Reaset all filters */}
+            {/** biome-ignore lint/nursery/noLeakedRender: <explanation> */}
+            {(jobTitle ||
+              selectedJbType ||
+              selectedWorkPlace ||
+              selectedSeniority) && (
+              <Button
+                variant="outline"
+                className="bg-purple-600 rounded-full p-3 text-white transition-color duration-200 hover:bg-purple-800 hover:text-white"
+                onClick={clearAllFilters}
+              >
+                Reset
+              </Button>
+            )}
           </div>
+           {/* Active Filters Pills */}
+          {activeFilters.length > 0 && (
+            <div className="mt-4 flex flex-wrap gap-2">
+              {activeFilters.map((f) => (
+                <span
+                  className="flex items-center gap-2 rounded-full bg-blue-100 px-3 py-1 text-blue-700 text-sm"
+                  key={f.key}
+                >
+                  {f.label}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>

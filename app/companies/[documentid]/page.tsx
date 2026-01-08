@@ -1,118 +1,70 @@
+"use client";
+
+// biome-ignore assist/source/organizeImports: <explanation>
+import { useCompany } from "@/hooks/useCompany";
 import CompanyOverviewPage from "@/components/companyOverviewPage";
+import { useParams } from "next/navigation";
+import moment from "moment";
+import type { Company, CompanyOverviewPageProps } from "@/types/company";
+import { Skeleton } from "@/components/ui/skeleton";
 
-const exampleCompanyData = {
-  id: '123',
-  companyLogoUrl: 'https://placehold.co/64x64/007A33/FFFFFF.png?text=G',
-  companyName: 'GreenWave Technologies',
-  totalJobs: 5,
-  overviewContent: {
-    about: [
-      'GreenWave Technologies is dedicated to providing cutting-edge software solutions that empower businesses to thrive.',
-      'Our team specializes in cloud computing, AI-driven analytics, and scalable web platforms. We believe in innovation.',
-      'We have collaborated with industry leaders in healthcare, finance, and retail to streamline operations and drive growth.',
-      'With offices in Seattle, WA and Austin, TX, GreenWave continues to expand our talented workforce through collaboration and excellence.',
-    ],
-  },
-  jobs: [
-    {
-      id: '1',
-      timePosted: '3 days ago',
-      tags: ['onsite - Seattle, WA'],
-      companyLogoUrl: 'https://placehold.co/56x56/007A33/FFFFFF.png?text=G',
-      jobTitle: 'Backend Engineer',
-      companyName:' GreenWave Technologies',
-      salaryRange: '110k - 140k USD/year',
-      isQuickApply: true,
-      isRemote: false,
-      location: 'Seattle, WA',
-      jobType: 'Full-time',
-    },
-        {
-      id: '15',
-      timePosted: '3 days ago',
-      tags: ['onsite - Seattle, WA'],
-      companyLogoUrl: 'https://placehold.co/56x56/007A33/FFFFFF.png?text=G',
-      jobTitle: 'Backend Engineer',
-      companyName:' GreenWave Technologies',
-      salaryRange: '110k - 140k USD/year',
-      isQuickApply: true,
-      isRemote: false,
-      location: 'Seattle, WA',
-      jobType: 'Full-time',
-    },
-        {
-      id: '5',
-      timePosted: '3 days ago',
-      tags: ['onsite - Seattle, WA'],
-      companyLogoUrl: 'https://placehold.co/56x56/007A33/FFFFFF.png?text=G',
-      jobTitle: 'Backend Engineer',
-      companyName:' GreenWave Technologies',
-      salaryRange: '110k - 140k USD/year',
-      isQuickApply: true,
-      isRemote: false,
-      location: 'Seattle, WA',
-      jobType: 'Full-time',
-    },
-        {
-      id: '6',
-      timePosted: '3 days ago',
-      tags: ['onsite - Seattle, WA'],
-      companyLogoUrl: 'https://placehold.co/56x56/007A33/FFFFFF.png?text=G',
-      jobTitle: 'Backend Engineer',
-      companyName:' GreenWave Technologies',
-      salaryRange: '110k - 140k USD/year',
-      isQuickApply: true,
-      isRemote: false,
-      location: 'Seattle, WA',
-      jobType: 'Full-time',
-    },
-        {
-      id: '7',
-      timePosted: '3 days ago',
-      tags: ['onsite - Seattle, WA'],
-      companyLogoUrl: 'https://placehold.co/56x56/007A33/FFFFFF.png?text=G',
-      jobTitle: 'Backend Engineer',
-      companyName:' GreenWave Technologies',
-      salaryRange: '110k - 140k USD/year',
-      isQuickApply: true,
-      isRemote: false,
-      location: 'Seattle, WA',
-      jobType: 'Full-time',
-    },
-        {
-      id: '8',
-      timePosted: '3 days ago',
-      tags: ['onsite - Seattle, WA'],
-      companyLogoUrl: 'https://placehold.co/56x56/007A33/FFFFFF.png?text=G',
-      jobTitle: 'Backend Engineer',
-      companyName:' GreenWave Technologies',
-      salaryRange: '110k - 140k USD/year',
-      isQuickApply: true,
-      isRemote: false,
-      location: 'Seattle, WA',
-      jobType: 'Full-time',
-    },
-        {
-      id: '9',
-      timePosted: '3 days ago',
-      tags: ['onsite - Seattle, WA'],
-      companyLogoUrl: 'https://placehold.co/56x56/007A33/FFFFFF.png?text=G',
-      jobTitle: 'Backend Engineer',
-      companyName:' GreenWave Technologies',
-      salaryRange: '110k - 140k USD/year',
-      isQuickApply: true,
-      isRemote: false,
-      location: 'Seattle, WA',
-      jobType: 'Full-time',
-    },
-  ],
-  sideBarDetails: {
-    companyWebsite: 'https://greenwavetech.com',
-  },
-};
+export default function CompanyPage() {
+  const { documentId } = useParams();
+  const { data, isLoading, error } = useCompany(documentId as string);
+  const company = data?.data as Company;
 
-export default function CompanyPage () {
-  return (
-    <CompanyOverviewPage {...exampleCompanyData} />
-  )
+  if (isLoading) {
+    return (
+      <div className="container mx-auto grid h-[80vh] max-w-7xl grid-cols-1 gap-8 px-4 py-8 lg:grid-cols-3">
+        {/* Main Content Area */}
+        <Skeleton className="mx-auto h-full w-full rounded-xl border border-gray-200 p-6 shadow-md md:p-8 lg:col-span-2" />
+
+        {/* Sidebar Area */}
+        <div className="flex flex-col gap-8 lg:col-span-1">
+          <Skeleton className="mx-auto h-full w-full rounded-xl border border-gray-200 shadow-md" />
+
+          <Skeleton className="mx-auto h-full w-full rounded-xl border border-gray-200 shadow-md" />
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return <p className="mx-auto max-w-7xl px-4 py-8">Error loading Company.</p>;
+  }
+
+  const companyData = {
+    id: company?.id,
+    documentId: company?.documentId,
+    companyLogoUrl: company?.logo
+      ? process.env.NEXT_PUBLIC_API_URL + company.logo.url
+      : "",
+    companyName: company?.companyName,
+    totalJobs: company?.jobs?.length,
+    overviewContent: {
+      about: company?.about?.map((item: { text: string }) => item.text) || [],
+    },
+    jobs: company?.jobs?.map((job) => ({
+      id: job.id,
+      documentId: job.documentId,
+      timePosted: moment(job.createdAt).fromNow(),
+      tags: [`${job.seniority}`],
+      companyLogoUrl: company?.logo
+        ? process.env.NEXT_PUBLIC_API_URL + company.logo.url
+        : "",
+      jobTitle: job.jobTitle,
+      companyName: company?.companyName,
+      salaryRange: job.salaryRange,
+      isRemote: job?.workplace === "Remote",
+      location: job?.workplace,
+      jobType: job.jobType,
+    })),
+    sidebarDetails: {
+      companyWebsite: company?.companyWebsite,
+    },
+  } as CompanyOverviewPageProps;
+
+  console.log("companyData:", company);
+  console.log(documentId);
+  return <CompanyOverviewPage {...companyData} />;
 }
