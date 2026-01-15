@@ -13,7 +13,7 @@ import Link from "next/link";
 
 export const Navbar = () => {
   const { data: session, status } = useSession();
-  console.log("Session data in Navbar:", session);
+
   return (
     <nav className="fixed z-50 top-0 w-full border-b bg-[#fafafa] h-20 py-4">
       <div className="max-w-5xl flex items-center justify-between mx-auto px-4 lg:px-0">

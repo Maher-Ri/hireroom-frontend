@@ -6,12 +6,17 @@ import { useParams } from "next/navigation";
 import { Skeleton } from "@/components/ui/skeleton";
 import moment from "moment";
 import type { Job } from "@/types/jobs";
-
+import { useSession } from "next-auth/react";
+import { useApplicationStatus } from "@/hooks/useApplication";
 export default function JobDetailsPage() {
   const { documentId } = useParams();
   const { data, error, isLoading } = useJob(documentId as string);
   const job = data?.data as Job;
- 
+
+  const { data: session } = useSession();
+  const { data: jobApplication } = useApplicationStatus(documentId as string, session);
+  console.log("Job Details Data:", jobApplication);
+  console.log("Job Application Status:", jobApplication?.data[0]?.applicationStatus);
   const jobDetailsData = {
     documentId: job?.documentId,
     companyLogoUrl: job?.company?.logo
@@ -38,6 +43,7 @@ export default function JobDetailsPage() {
       publishideDate: moment(job?.createdAt).format("MMM Do, YYYY"),
       companyWebsite: job?.company?.companyWebsite,
     },
+    jobApplication:jobApplication?.data[0]
   };
 
   if (isLoading) {

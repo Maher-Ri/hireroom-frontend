@@ -12,7 +12,7 @@ export async function fetchJobs({
     pageSize: number;
     filters: JobFilters
 }) {
-    const query=new URLSearchParams();
+    const query = new URLSearchParams();
     query.set('pagination[page]', String(page));
     query.set('pagination[pageSize]', String(pageSize));
     query.set('populate[benefits]', 'true');
@@ -37,9 +37,8 @@ export async function fetchJobs({
     const res = await axios.get(`${API_URL}/api/jobs?${query.toString()}`);
     return res.data;
 }
-
 export async function fetchJobsByDocId(documentId: string) {
-    const query=new URLSearchParams();
+    const query = new URLSearchParams();
     query.set('populate[benefits]', 'true');
     query.set('populate[aboutRole]', 'true');
     query.set('populate[whatWeDo]', 'true');
@@ -49,8 +48,46 @@ export async function fetchJobsByDocId(documentId: string) {
     return res.data;
 }
 export async function fetchCompanyByDocId(documentId: string) {
-    const query=new URLSearchParams();
+    const query = new URLSearchParams();
     query.set('populate', '*');
     const res = await axios.get(`${API_URL}/api/companies/${documentId}?${query.toString()}`);
+    return res.data;
+}
+export async function createApplication({
+    token,
+    interestReason,
+    skills,
+    job,
+    user,
+    resume
+}: {
+    token: string,
+    interestReason: string,
+    skills: string,
+    job: string,
+    user: string,
+    resume: string
+}) {
+    const headers = token ? { Authorization: `Bearer ${token}` } : {};
+    return await axios.post(`${API_URL}/api/applications`, {
+        data: {
+            interestReason,
+            skills,
+            job,
+            applicationStatus: 'Pending',
+            // user,
+            resume
+        }
+    }, {
+        headers
+    });
+}
+export async function fetchApplicationStatus(jobDocId: string, session: any) {
+    const headers = session ? { Authorization: `Bearer ${session?.jwt}` } : {};
+
+    const res = await axios.get(
+        `${API_URL}/api/applications?filters[job][documentId][$eq]=${jobDocId}`,
+        { headers }
+    );
     return res.data;
 }

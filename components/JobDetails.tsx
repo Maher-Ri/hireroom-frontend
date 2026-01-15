@@ -13,6 +13,10 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
+import React from "react";
+// import App from "next/app";
+import ApplicationDialog from "./ApplicationDialog";
+import { cn } from "@/lib/utils";
 
 type JobDetailsPageProps = {
   documentId: string;
@@ -37,6 +41,7 @@ type JobDetailsPageProps = {
     publishideDate: string;
     companyWebsite: string;
   };
+  jobApplication?: any;
 };
 export default function JobDetails({
   documentId,
@@ -50,8 +55,10 @@ export default function JobDetails({
   whatWeDo,
   waysToWork,
   sidebarDetails,
+  jobApplication,
 }: JobDetailsPageProps) {
   const jobUrl = `${window.location.origin}/jobs/${documentId}`;
+  const [openDialog, setOpenDialog] = React.useState<boolean>(false);
 
   const handleShare = async () => {
     if (navigator.share) {
@@ -75,8 +82,14 @@ export default function JobDetails({
       }
     }
   };
+  console.log("Job Application in JobDetails:", jobApplication);
   return (
     <div className="min-h-screen px-4 py-8 bg-gray-100 font-sans">
+      <ApplicationDialog
+        open={openDialog}
+        setOpen={setOpenDialog}
+        jobDocId={documentId}
+      />
       <div className="grid grid-cols-1 lg:grid-cols-3 mx-auto container max-w-7xl gap-8">
         {/* MAIN CONTENT AREA */}
         <div className="rounded-xl border border-gray-200 p-6 bg-white shadow-md lg:col-span-2 md:p-8">
@@ -112,8 +125,23 @@ export default function JobDetails({
                   Share job
                 </Button>
 
-                <Button className="rounded-full bg-blue-600 px-4 py-2 text-white hover:bg-blue-700">
-                  Apply
+                <Button
+                  // className="rounded-full bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+                  className={cn(
+                    "rounded-full bg-blue-600 px-4 py-2 text-white hover:bg-blue-700",
+                    jobApplication?.applicationStatus === "Accepted" &&
+                      "bg-green-600 hover:bg-green-700",
+                    jobApplication?.applicationStatus === "Rejected" &&
+                      "bg-red-600 hover:bg-red-700"
+                  )}
+                  disabled={jobApplication}
+                  onClick={() => {
+                    setOpenDialog(true);
+                  }}
+                >
+                  {jobApplication
+                    ? `Already applied (${jobApplication?.applicationStatus})`
+                    : "Apply"}{" "}
                   <Zap className="ml-2 h-4 w-4" />
                 </Button>
               </div>
@@ -207,8 +235,23 @@ export default function JobDetails({
                 {sidebarDetails.publishideDate}
               </li>
             </ul>
-            <Button className="mt-6 w-full rounded-lg bg-blue-600 py-3 text-white hover:bg-blue-700">
-              Apply <Zap className="ml-2 h-4 w-4" />
+            <Button
+              className={cn(
+                "mt-6 w-full rounded-lg bg-blue-600 py-3 text-white hover:bg-blue-700",
+                jobApplication?.applicationStatus === "Accepted" &&
+                  "bg-green-600 hover:bg-green-700",
+                jobApplication?.applicationStatus === "Rejected" &&
+                  "bg-red-600 hover:bg-red-700"
+              )}
+              disabled={jobApplication}
+              onClick={() => {
+                setOpenDialog(true);
+              }}
+            >
+              {jobApplication
+                ? `Already applied (${jobApplication?.applicationStatus})`
+                : "Apply"}{" "}
+              <Zap className="ml-2 h-4 w-4" />
             </Button>
           </div>
           {/* Company Information Card */}

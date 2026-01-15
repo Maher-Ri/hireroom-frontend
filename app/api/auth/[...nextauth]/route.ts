@@ -32,6 +32,7 @@ const handler = NextAuth({
                 })
                 const fullUser = await userRes.json();
                 return {
+                    documentId: data.user.documentId,
                     id: data.user.id,
                     name: fullUser.username,
                     email: fullUser.email,
@@ -47,6 +48,7 @@ const handler = NextAuth({
     callbacks: {
         jwt({ token, user }) {
             if (user) {
+                token.documentId = user.documentId;
                 token.jwt = user.jwt;
                 token.id = user.id;
                 token.userDetailDocId = user.userDetailDocId;
@@ -57,6 +59,7 @@ const handler = NextAuth({
             return token
         },
         session({ session, token }) {
+            session.user.documentId = token.documentId;
             session.user.id = token.id;
             session.jwt = token.jwt;
             session.user.userDetailDocId = token.userDetailDocId;
