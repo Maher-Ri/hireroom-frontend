@@ -46,7 +46,7 @@ const handler = NextAuth({
         })
     ],
     callbacks: {
-        jwt({ token, user }) {
+        jwt({ token, user, trigger, session }) {
             if (user) {
                 token.documentId = user.documentId;
                 token.jwt = user.jwt;
@@ -55,6 +55,12 @@ const handler = NextAuth({
                 token.firstName = user.firstName;
                 token.lastName = user.lastName;
                 token.resume = user.resume;
+            }
+            // handle manual session.update()
+            if (trigger === 'update' && session) {
+                token.firstName = session.firstName ?? token.firstName;
+                token.lastName = session.lastName ?? token.lastName;
+                token.resume = session.resume ?? token.resume;
             }
             return token
         },

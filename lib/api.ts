@@ -58,14 +58,14 @@ export async function createApplication({
     interestReason,
     skills,
     job,
-    user,
+    // user,
     resume
 }: {
     token: string,
     interestReason: string,
     skills: string,
     job: string,
-    user: string,
+    // user: string,
     resume: string
 }) {
     const headers = token ? { Authorization: `Bearer ${token}` } : {};
@@ -90,4 +90,21 @@ export async function fetchApplicationStatus(jobDocId: string, session: any) {
         { headers }
     );
     return res.data;
+}
+export async function updateUserDetails({
+    documentId, firstName, lastName, resume, token,
+}: {
+    documentId: string,
+    firstName: string,
+    lastName: string,
+    resume: string,
+    token: string
+}) {
+    const headers = token ? { Authorization: `Bearer ${token}` } : {};
+    return await axios.put(`${API_URL}/api/user-details/${documentId}`,
+        {
+            data: { firstName, lastName, resume }
+        }, {
+        headers
+    });
 }

@@ -12,8 +12,8 @@ import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 
 export const Navbar = () => {
-  const { data: session, status } = useSession();
-
+  const { data: session, status }: any = useSession();
+console.log(session?.user)
   return (
     <nav className="fixed z-50 top-0 w-full border-b bg-[#fafafa] h-20 py-4">
       <div className="max-w-5xl flex items-center justify-between mx-auto px-4 lg:px-0">
@@ -44,13 +44,18 @@ export const Navbar = () => {
             <DropdownMenu>
               {/* FIX: Trigger now has only ONE child (The Button) */}
               <DropdownMenuTrigger asChild>
-                <span className="text-black text-base font-bold flex flex-col items-center gap-2 text-center cursor-pointer">
+                <span className="text-purple-700 text-base font-bold flex flex-col items-center gap-2 text-center cursor-pointer capitalize">
                   <UserIcon className="w-5 h-5" />
-                  Profile
+                  {session.user.firstName}
                 </span>
               </DropdownMenuTrigger>
 
               <DropdownMenuContent className="w-56 bg-white border rounded shadow-md p-2">
+
+                <DropdownMenuItem className="flex items-center px-2 py-1 outline-none hover:bg-gray-100 cursor-pointer">
+                  <Link href="/Applications">My Applications</Link>
+                </DropdownMenuItem>
+
                 <DropdownMenuItem className="flex items-center px-2 py-1 outline-none hover:bg-gray-100 cursor-pointer">
                   <Link href="/settings">Settings</Link>
                 </DropdownMenuItem>
