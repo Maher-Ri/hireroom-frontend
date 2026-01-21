@@ -3,7 +3,7 @@ import JobCard from "@/components/JobCard";
 import { JobSearch } from "@/components/JobSearch";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useJobs } from "@/hooks/useJobs";
+import { useJobs } from "@/hooks/queries/useJobs";
 import type { JobFilters } from "@/types/jobs";
 import moment from "moment";
 import { useState } from "react";

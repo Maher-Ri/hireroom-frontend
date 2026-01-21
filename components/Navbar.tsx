@@ -53,7 +53,7 @@ console.log(session?.user)
               <DropdownMenuContent className="w-56 bg-white border rounded shadow-md p-2">
 
                 <DropdownMenuItem className="flex items-center px-2 py-1 outline-none hover:bg-gray-100 cursor-pointer">
-                  <Link href="/Applications">My Applications</Link>
+                  <Link href="/jobs/applied">My Applications</Link>
                 </DropdownMenuItem>
 
                 <DropdownMenuItem className="flex items-center px-2 py-1 outline-none hover:bg-gray-100 cursor-pointer">

@@ -34,7 +34,7 @@ import { Textarea } from "./ui/textarea";
 import { toast } from "sonner";
 import axios from "axios";
 import { useSession } from "next-auth/react";
-import { useCreateApplication } from "@/hooks/useApplication";
+import { useCreateApplication } from "@/hooks/queries/useApplication";
 import { useRouter } from "next/navigation";
 
 const formSchema = z.object({

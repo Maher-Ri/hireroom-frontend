@@ -1,6 +1,6 @@
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
-import { fetchJobs,fetchJobsByDocId } from "../lib/api";
-import type { JobFilters } from "../types/jobs";
+import { fetchJobs,fetchJobsByDocId } from "@/services/jobs-services";
+import type { JobFilters } from "../../types/jobs";
 
 export function useJobs(filters: JobFilters) {
 

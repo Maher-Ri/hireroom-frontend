@@ -10,7 +10,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useUpdateUserDetails } from "@/hooks/useUserDetails";
+import { useUpdateUserDetails } from "@/hooks/queries/useUserDetails";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import { useSession } from "next-auth/react";

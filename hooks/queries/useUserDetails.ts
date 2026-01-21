@@ -1,4 +1,4 @@
-import { updateUserDetails } from "@/lib/api";
+import { updateUserDetails } from "@/services/users-services";
 import { useMutation } from "@tanstack/react-query";
 
 export function useUpdateUserDetails() {

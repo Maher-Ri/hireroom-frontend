@@ -1,7 +1,7 @@
 "use client";
 
 // biome-ignore assist/source/organizeImports: <explanation>
-import { useCompany } from "@/hooks/useCompany";
+import { useCompany } from "@/hooks/queries/useCompany";
 import CompanyOverviewPage from "@/components/companyOverviewPage";
 import { useParams } from "next/navigation";
 import moment from "moment";

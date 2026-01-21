@@ -69,7 +69,7 @@ export default function JobCard({
               // }}
             />
           ) : (
-            <span className="text-lg font-bold border border-gray-100 rounded-lg h-14 w-14 flex items-center justify-center bg-purple-200">{companyName.charAt(0)}</span>
+            <span className="text-lg font-bold border border-gray-100 rounded-lg h-14 w-14 flex items-center justify-center bg-purple-200">{companyName?.charAt(0)}</span>
           )}
         </div>
         <div className="grow">

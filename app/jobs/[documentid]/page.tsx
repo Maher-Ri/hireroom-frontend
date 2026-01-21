@@ -1,13 +1,13 @@
 "use client";
 
 import JobDetails from "@/components/JobDetails";
-import { useJob } from "@/hooks/useJobs";
+import { useJob } from "@/hooks/queries/useJobs";
 import { useParams } from "next/navigation";
 import { Skeleton } from "@/components/ui/skeleton";
 import moment from "moment";
 import type { Job } from "@/types/jobs";
 import { useSession } from "next-auth/react";
-import { useApplicationStatus } from "@/hooks/useApplication";
+import { useApplicationStatus } from "@/hooks/queries/useApplication";
 export default function JobDetailsPage() {
   const { documentId } = useParams();
   const { data, error, isLoading } = useJob(documentId as string);
