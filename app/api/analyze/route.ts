@@ -19,7 +19,7 @@ export async function POST(req: Request) {
 
   try {
     const completion = await openai.chat.completions.create({
-      model: 'meta-llama/llama-4-maverick:free', // Switched to free Llama model
+      model: 'google/gemini-2.0-flash-exp:free',
       messages: [
         {
           role: 'system',
@@ -38,10 +38,15 @@ export async function POST(req: Request) {
       completion.choices[0]?.message?.content || 'No analysis generated';
 
     return Response.json({ analysis });
-  } catch (error) {
-    console.error('Error:', error);
+  } catch (error: any) {
+    // This will print the actual OpenRouter error in your terminal
+    console.error('AI API ERROR:', error.response?.data || error.message || error);
+
     return new Response(
-      JSON.stringify({ error: 'Failed to generate analysis' }),
+      JSON.stringify({
+        error: 'Failed to generate analysis',
+        details: error.message // Temporarily send this to the frontend to see it
+      }),
       { status: 500 }
     );
   }
