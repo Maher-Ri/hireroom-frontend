@@ -9,6 +9,7 @@ import {
   DollarSign,
   MapPin,
   Share2,
+  Sparkles,
   Zap,
 } from "lucide-react";
 import Link from "next/link";
@@ -17,6 +18,7 @@ import React from "react";
 // import App from "next/app";
 import ApplicationDialog from "./ApplicationDialog";
 import { cn } from "@/lib/utils";
+import AiAnalyzerDialog from "./AiAnalyzerDialog";
 
 type JobDetailsPageProps = {
   documentId: string;
@@ -59,6 +61,8 @@ export default function JobDetails({
 }: JobDetailsPageProps) {
   const jobUrl = `${window.location.origin}/jobs/${documentId}`;
   const [openDialog, setOpenDialog] = React.useState<boolean>(false);
+  const [openAnalyzerDialog, setOpenAnalyzerDialog] =
+    React.useState<boolean>(false);
 
   const handleShare = async () => {
     if (navigator.share) {
@@ -82,13 +86,23 @@ export default function JobDetails({
       }
     }
   };
-  console.log("Job Application in JobDetails:", jobApplication);
+  // console.log("Job Application in JobDetails:", jobApplication);
   return (
     <div className="min-h-screen px-4 py-8 bg-gray-100 font-sans">
       <ApplicationDialog
         open={openDialog}
         setOpen={setOpenDialog}
         jobDocId={documentId}
+      />
+      <AiAnalyzerDialog
+        open={openAnalyzerDialog}
+        setOpen={setOpenAnalyzerDialog}
+        benefits={benefits}
+        aboutRole={aboutRole}
+        jobAttributes={jobAttributes}
+        jobTitle={jobTitle}
+        waysToWork={waysToWork}
+        whatWeDo={whatWeDo}
       />
       <div className="grid grid-cols-1 lg:grid-cols-3 mx-auto container max-w-7xl gap-8">
         {/* MAIN CONTENT AREA */}
@@ -115,7 +129,7 @@ export default function JobDetails({
                 <h1 className="font-bold text-2xl text-gray-600">{jobTitle}</h1>
                 <p className="text-base text-gray-600">{companyName}</p>
               </div>
-              <div className="flex shrink-0 items-center gap-2">
+              <div className="flex shrink-0 flex-wrap  items-center gap-2">
                 <Button
                   className="rounded-full px-4 py-2 text-gray-700 hover:bg-gray-50"
                   onClick={handleShare}
@@ -132,7 +146,7 @@ export default function JobDetails({
                     jobApplication?.applicationStatus === "Accepted" &&
                       "bg-green-600 hover:bg-green-700",
                     jobApplication?.applicationStatus === "Rejected" &&
-                      "bg-red-600 hover:bg-red-700"
+                      "bg-red-600 hover:bg-red-700",
                   )}
                   disabled={jobApplication}
                   onClick={() => {
@@ -143,6 +157,15 @@ export default function JobDetails({
                     ? `Already applied (${jobApplication?.applicationStatus})`
                     : "Apply"}{" "}
                   <Zap className="ml-2 h-4 w-4" />
+                </Button>
+
+                <Button
+                  className="rounded-full px-4 py-2 text-gray-300 bg-gray-800 hover:text-gray-100 hover:bg-gray-900"
+                  onClick={() => setOpenAnalyzerDialog(true)}
+                  variant="outline"
+                >
+                  <Sparkles className="mr-2 h-4 w-4" />
+                  AI Analyzer
                 </Button>
               </div>
             </div>
@@ -241,7 +264,7 @@ export default function JobDetails({
                 jobApplication?.applicationStatus === "Accepted" &&
                   "bg-green-600 hover:bg-green-700",
                 jobApplication?.applicationStatus === "Rejected" &&
-                  "bg-red-600 hover:bg-red-700"
+                  "bg-red-600 hover:bg-red-700",
               )}
               disabled={jobApplication}
               onClick={() => {
