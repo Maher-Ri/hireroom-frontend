@@ -9,7 +9,7 @@ export function useCreateApplication() {
             interestReason,
             skills,
             job,
-            userId,
+            // userId,
             resume
         }: any) => {
             const response = await createApplication({
@@ -17,7 +17,7 @@ export function useCreateApplication() {
                 interestReason,
                 skills,
                 job,
-                user: userId,
+                // user: userId,
                 resume
             });
             return response.data;
